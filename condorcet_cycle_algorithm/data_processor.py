@@ -1,5 +1,3 @@
-#Tasks: Figure out why the list index goes out of range
-
 import csv
 from con_cycle import condorcet_cycle
 from collections import defaultdict
@@ -77,7 +75,7 @@ def main():
 #Test 1:
 #file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
 #print_debug(file_path)
-#main() #Surprisingly, there seems to be a condorcet cycle in this example
+main() #Surprisingly, there seems to be a condorcet cycle in this example
 
 #Test 2:
 #file_path = csvfinder('Concycle-example.csv')

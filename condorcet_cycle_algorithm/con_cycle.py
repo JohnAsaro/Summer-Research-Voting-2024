@@ -29,9 +29,11 @@ def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and dete
 
     #A3: Build directed graph
     graph = defaultdict(list)
-    for i in range(m):
+    for i in range(m - 1):
         for j in range(i + 1, m):
-            if preference_count[i][j] > preference_count[j][i]:
+            if (preference_count[i][j] == 0 and preference_count[j][i] == 0): #If both prefrence counts are empty, we are counting ballots that dont exist and should move on
+                pass
+            elif preference_count[i][j] > preference_count[j][i]:
                 graph[i].append(j) #Add an edge c_i'→c_j'
             elif preference_count[i][j] < preference_count[j][i]:
                 graph[j].append(i) #Add an edge c_j'→c_i'
@@ -43,28 +45,35 @@ def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and dete
     stack = [] #Initialize empty stack
 
     def dfs(node, traverse_dfs, stack_dfs):
-        if traverse_dfs[node] == "visiting":
-            return True  #Cycle found
-        if traverse_dfs[node] == "visited":
-            return False #Not part of our potential cycle so false
+        if traverse_dfs[node] == "visiting": #Cycle found
+            cycle_start = stack_dfs.index(node)
+            cycle = stack_dfs[cycle_start:] + [node]
+            return cycle #Return it
+        if traverse_dfs[node] == "visited": #Not part of the current potential cycle
+            return None #Don't return anything
         
         traverse_dfs[node] = "visiting"
-        stack.append(node)
+        stack_dfs.append(node)
         
         for neighbor in graph[node]:
-            if dfs(neighbor, traverse_dfs, stack_dfs): #If our neighbor is part of a cycle
-                return True #We are aswell
+            cycle = dfs(neighbor, traverse_dfs, stack_dfs) #If our neighbor is part of a cycle
+            if cycle:
+                return cycle #We are aswell
         
         traverse_dfs[node] = "visited" #We visited the node without detecting a cycle
         stack.pop() #Pop our node out of the stack
-        return False
+        return None
 
     for i in range(m):
-        if traverse[i] == "unvisited":
-            if dfs(i, traverse, stack): #If node i is part of a cycle
-                return True  #Condorcet cycle found
+        if traverse[i] == "unvisited": #If node i is part of a cycle
+            cycle = dfs(i, traverse, stack)
+            if cycle:
+                #Convert the cycle from indices to candidate names and print it
+                cycle_names = [candidates[idx] for idx in cycle]
+                print(f"A condorcet cycle exists in this input instance: {cycle_names}")
+                return True #Theres a cycle so theres a condorcet cycle
 
-    return False  #We passed!
+    return False #No cycle so no condorcet cycle
 
 def main(): #For manually testing inputs
     if __name__ == "__main__":
@@ -86,4 +95,5 @@ def main(): #For manually testing inputs
         ]
         print(f"In this case there is no condorcet cycle and {condorcet_cycle(example_candidates, ballots_no_cycle)} will be returned.") 
 
+#Testing
 #main()
