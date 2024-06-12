@@ -1,7 +1,3 @@
-#Tasks:
-#1: A3 can be made more efficent, its not technically neccesary to loop through all items in the matrix,
-#but its not a huge deal either, unless we run into computing limitations I wouldn't change it. 
-
 from collections import defaultdict
 
 def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and detects if there is a condorcet cycle
@@ -15,7 +11,12 @@ def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and dete
 
     #A2: Populate prefrence count matrix
     for ballot in ballots:
-        n = len(ballot)
+
+        n = len(ballot) #n = length of current ballot
+        listed_candidates = set(ballot)
+        unlisted_candidates = set(candidates) - listed_candidates
+        
+        #Increment counts for candidates listed on ballot
         for i in range(n - 1):
             for j in range(i + 1, n):
                 winner = ballot[i]
@@ -25,6 +26,15 @@ def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and dete
                 winner_idx = candidates.index(winner)
                 loser_idx = candidates.index(loser)
                 preference_count[winner_idx][loser_idx] += 1
+            
+            #Increment counts for candidates not listed on ballot
+
+            for listed in listed_candidates:
+                listed_idx = candidates.index(listed)
+                for unlisted in unlisted_candidates:
+                    unlisted_idx = candidates.index(unlisted)
+                    preference_count[listed_idx][unlisted_idx] += 1
+
             #print('WE LOOPED') #OOB error bugfixing
 
     #A3: Build directed graph

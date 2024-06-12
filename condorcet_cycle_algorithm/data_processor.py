@@ -1,6 +1,5 @@
 import csv
 from con_cycle import condorcet_cycle
-from collections import defaultdict
 from pathfinder import csvfinder
 
 def read_csv(file_path):
@@ -15,7 +14,7 @@ def clean_data(data):
     for row in data:
         row = row[:-1] #Ingore the "Count" column
         cleaned_row = [candidate.strip() for candidate in row if candidate.strip() and candidate.strip().lower() != 'null'] #Process data and ignore 'Null'
-        #cleaned_row = [candidate.strip() for candidate in row if candidate.strip()] #OOB Error bugfixing, processes 'NULL' colums
+        #cleaned_row = [candidate.strip() for candidate in row if candidate.strip()] #OOB Error bugfixing, processes 'Null' colums
         if cleaned_row:
             cleaned_data.append(cleaned_row)
     return cleaned_data
@@ -75,7 +74,7 @@ def main():
 #Test 1:
 #file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
 #print_debug(file_path)
-main() #Surprisingly, there seems to be a condorcet cycle in this example
+#main()
 
 #Test 2:
 #file_path = csvfinder('Concycle-example.csv')
@@ -85,7 +84,7 @@ main() #Surprisingly, there seems to be a condorcet cycle in this example
 
 #Test 3: 
 #file_path = csvfinder('2021-Mayor-Cast-Vote-Record.csv')
-#result = data_processor(file_path) #This one aswell, something seems fishy
+#result = data_processor(file_path)
 #print(f"Condorcet cycle found: {result}") 
 #print_debug(file_path)
 
