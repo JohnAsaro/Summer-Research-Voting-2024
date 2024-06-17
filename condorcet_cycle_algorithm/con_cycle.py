@@ -1,10 +1,17 @@
+#Tasks:
+#1: A2 can be changed so that the amount of votes added to each prefrence matrix are pulled from the "count" column and not just assumed to be 1
 from collections import defaultdict
 
-def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and detects if there is a condorcet cycle
+def condorcet_cycle(candidates, ballots, vote_counts): #Takes candidates/ballots/vote counts and detects if there is a condorcet cycle
 
-    #Number of candidates (m) and voters/ballots (n)
-    m = len(candidates)
-    n = len(ballots[0])
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+
+    m = len(candidates) #Number of candidates = m
 
     #A1: Initialize prefrence count matrix
     preference_count = [[0] * m for _ in range(m)] 
@@ -12,22 +19,24 @@ def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and dete
     #A2: Populate prefrence count matrix
     for ballot in ballots:
 
-        n = len(ballot) #n = length of current ballot
+        current = ballots.index(ballot) #currrent is our current ballot
+        ballot_length = len(ballot) #ballot_length = length of current ballot
         listed_candidates = set(ballot)
         unlisted_candidates = set(candidates) - listed_candidates
         
         #Increment counts for candidates listed on ballot
-        for i in range(n - 1):
-            for j in range(i + 1, n):
+        for i in range(ballot_length - 1):
+            for j in range(i + 1, ballot_length):
                 winner = ballot[i]
                 #print(f'i is {i}') #OOB error bugfixing
                 loser = ballot[j]
                 #print(f'j is {j}') #OOB error bugfixing
                 winner_idx = candidates.index(winner)
                 loser_idx = candidates.index(loser)
-                preference_count[winner_idx][loser_idx] += 1
+                preference_count[winner_idx][loser_idx] += vote_counts[current]
             
             #Increment counts for candidates not listed on ballot
+            #Every candidate not listed on the ballot is considered to be ranked lower than every candidate listed on the ballot
 
             for listed in listed_candidates:
                 listed_idx = candidates.index(listed)
@@ -39,11 +48,9 @@ def condorcet_cycle(candidates, ballots): #Takes candidates and ballots and dete
 
     #A3: Build directed graph
     graph = defaultdict(list)
-    for i in range(m - 1):
+    for i in range(m):
         for j in range(i + 1, m):
-            if (preference_count[i][j] == 0 and preference_count[j][i] == 0): #If both prefrence counts are empty, we are counting ballots that dont exist and should move on
-                pass
-            elif preference_count[i][j] > preference_count[j][i]:
+            if preference_count[i][j] > preference_count[j][i]:
                 graph[i].append(j) #Add an edge c_i'→c_j'
             elif preference_count[i][j] < preference_count[j][i]:
                 graph[j].append(i) #Add an edge c_j'→c_i'
@@ -90,20 +97,21 @@ def main(): #For manually testing inputs
         #Example Inputs
 
         example_candidates = ["A", "B", "C"]
+        example_vote_counts = [1, 1, 1]
 
         ballots_cycle = [
             ["A", "B", "C"],  #Voter 1 prefers A > B > C
             ["B", "C", "A"],  #Voter 2 prefers B > C > A
             ["C", "A", "B"]   #Voter 3 prefers C > A > B
         ]
-        print(f"In this case there is a condorcet cycle and {condorcet_cycle(example_candidates, ballots_cycle)} will be returned.") 
+        print(f"In this case there is a condorcet cycle and {condorcet_cycle(example_candidates, ballots_cycle, example_vote_counts)} will be returned.") 
 
         ballots_no_cycle = [
             ["A", "B", "C"],  #Voter 1 prefers A > B > C
             ["A", "B", "C"],  #Voter 2 prefers A > B > C
             ["C", "B", "A"],  #Voter 3 prefers C > B > A
         ]
-        print(f"In this case there is no condorcet cycle and {condorcet_cycle(example_candidates, ballots_no_cycle)} will be returned.") 
+        print(f"In this case there is no condorcet cycle and {condorcet_cycle(example_candidates, ballots_no_cycle, example_vote_counts)} will be returned.") 
 
 #Testing
 #main()
