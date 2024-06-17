@@ -17,8 +17,7 @@ def clean_data(data):
 
     for row in data[1:]: #For row in data skipping header row
         count = int(row[count_index]) #Vote count for this row is count
-        cleaned_row = [candidate.strip() for candidate in row if candidate.strip() and candidate.strip().lower() != 'null'] #Process data and ignore 'Null'
-        #cleaned_row = [candidate.strip() for candidate in row if candidate.strip()] #OOB Error bugfixing, processes 'Null' colums
+        cleaned_row = [candidate.strip() for i, candidate in enumerate(row) if i != count_index and candidate.strip() and candidate.strip().lower() != 'null']  #Process data and ignore 'null' and 'count' column
         if cleaned_row:
             cleaned_data.append(cleaned_row)
             vote_counts.append(count)
@@ -55,19 +54,22 @@ def print_debug(file_path):
     #print("Raw data:")
     #print(data)
     
-    cleaned_data = clean_data(data)
+    cleaned_data, vote_counts = clean_data(data)
     #print("Cleaned data:")
     #print(cleaned_data)
     
     candidates, ballots = format_data_for_condorcet(cleaned_data)
     print("Ballots:")
-    for ballot in ballots:
+    for ballot in ballots: #Print each ballot
         counter += 1            
         print(counter, ballot, "Length:", len(ballot))
 
-    print("Candidates:")
+    print("Candidates:") #Print each candidate
     print(candidates)
 
+    print("Vote counts:") #Print vote counts
+    print(vote_counts)
+ 
 def main():
     if __name__ == "__main__":
         #Example usage
@@ -78,9 +80,9 @@ def main():
 #Testing
 
 #Test 1:
-file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
+#file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
 #print_debug(file_path)
-main()
+#main()
 
 #Test 2:
 #file_path = csvfinder('Concycle-example.csv')
