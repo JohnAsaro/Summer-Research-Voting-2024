@@ -1,5 +1,3 @@
-#Tasks:
-#1: A2 can be changed so that the amount of votes added to each prefrence matrix are pulled from the "count" column and not just assumed to be 1
 from collections import defaultdict
 
 def condorcet_cycle(candidates, ballots, vote_counts): #Takes candidates/ballots/vote counts and detects if there is a condorcet cycle
