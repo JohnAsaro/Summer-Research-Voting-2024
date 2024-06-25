@@ -5,6 +5,7 @@
 #Tasks: 
 #T1 - Figure out how to break ties
 #T2 - Figure out how to deal with candidates not on the ballot
+#T3 - fix data processor because I broke it again like a dumbass
 
 def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
     
@@ -30,14 +31,18 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
         for j in range(i + 1, m):
             for k in range(m):
                 counter = 0 #Initialize counter
+                tiebreaker = 0 #Initialize tiebreaker
+                current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
                 for ballot, count in zip(ballots, vote_counts):
                     if candidates[i] in ballot and candidates[j] in ballot: #If both candidates are in the ballot
                         if ballot.index(candidates[i]) < ballot.index(candidates[k]) or ballot.index(candidates[j]) < ballot.index(candidates[k]) or candidates[k] not in ballot: #If any candidate in this pair beats k or k is not listed
                             counter += count
-                    if candidates[i] in ballot and candidates[j] not in ballot: #If candidate i is in the ballot but j is not
+                            if ballot.index(candidates[i]) < ballot.index(candidates[k]) and ballot.index(candidates[j]) < ballot.index(candidates[k]): #If both candidates in the pair beat k, for tiebreaking purposes
+                                tiebreaker += count
+                    elif candidates[i] in ballot and candidates[j] not in ballot: #If candidate i is in the ballot but j is not
                         if ballot.index(candidates[i]) < ballot.index(candidates[k]) or candidates[k] not in ballot: #If i beats k or k is not listed        
                             counter += count
-                    if candidates[j] in ballot and candidates[i] not in ballot: #If candidate j is in the ballot but i is not           
+                    elif candidates[j] in ballot and candidates[i] not in ballot: #If candidate j is in the ballot but i is not           
                         if ballot.index(candidates[j]) < ballot.index(candidates[k]) or candidates[k] not in ballot: #If j beats k or k is not listed   
                             counter += count  
                 #Normalize θ by the total number of votes to get the coefficient
@@ -46,12 +51,18 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
                     max_coefficient = pair_coefficient
                     greatest_theta_winning_sets = [(candidates[i], candidates[j])]
                 elif pair_coefficient == max_coefficient and max_coefficient != 0:
-                    greatest_theta_winning_sets.append((candidates[i], candidates[j]))
+                    #greatest_theta_winning_sets.append((candidates[i], candidates[j]))
+                    if tiebreaker > current_champ_tiebreaker: #If the current pair has a higher tiebreaker than the current champion
+                        greatest_theta_winning_sets = [(candidates[i], candidates[j])]
+                        current_champ_tiebreaker = tiebreaker
+                    elif tiebreaker == current_champ_tiebreaker: #If the tiebreakers are equal, this should be rare
+                        #print("Tie found")
+                        greatest_theta_winning_sets.append((candidates[i], candidates[j]))
 
     #A3: Return greatest θ-winning sets
     return greatest_theta_winning_sets, max_coefficient
 
-def main():
+def main(): #Testing various inputs
     import random
     #Example with 100 ballots and varied combinations
     candidates = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -113,6 +124,25 @@ def main():
     winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficent}-winning sets:", winners)
 
+def check_for_ties(): #This method is used to check for ties in the greatest θ-winning set, this tests how good the tiebreaking method is
+    import random
+    winners = []
+    ballots = []
+    total_ties = 0
+    for i in range(100000):
+        if len(winners) < 2: 
+            total_ties += 1
+        candidates = ['A', 'B', 'C']
+        vote_counts = []
+        ballots = []
+        for _ in range(5):
+            ballot = random.sample(candidates, len(candidates)) 
+            ballots.append(ballot)
+            vote_counts.append(1)
+        winners, coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+    print(total_ties) #How many ties was that?
+
 #Testing
 if __name__ == "__main__":
     main()
+check_for_ties()

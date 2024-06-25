@@ -74,15 +74,15 @@ def main():
     if __name__ == "__main__":
         #Example usage
         file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
-        winners, coefficent = data_processor(file_path)
-        print(f"Greatest {coefficent}-winning sets:", winners)
+        winners, coefficient = data_processor(file_path)
+        print(f"Greatest {coefficient}-winning sets:", winners)
 
 #Testing
 
 #Example usage for Test 1
-#file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
-#winners, coefficient = data_processor(file_path)
-#print(f"Greatest {coefficient}-winning sets:", winners)
+file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
+winners, coefficient = data_processor(file_path)
+print(f"Greatest {coefficient}-winning sets:", winners)
 
 #Example usage for Test 2
 #file_path = csvfinder('Concycle-example.csv')
