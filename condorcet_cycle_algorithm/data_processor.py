@@ -80,9 +80,9 @@ def main():
 #Testing
 
 #Test 1:
-#file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
+file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
 #print_debug(file_path)
-#main()
+main()
 
 #Test 2:
 #file_path = csvfinder('Concycle-example.csv')

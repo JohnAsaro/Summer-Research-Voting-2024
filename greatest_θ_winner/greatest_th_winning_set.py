@@ -1,4 +1,10 @@
-#task - make this work it doesnt work
+#Rewriting greatest_th_winning set
+#This method is a lot less efficent and does not use a prefrence matrix, but correctly calculates 
+#the result such that the definitions of a θ-winning set match the paper this is based off of
+
+#Tasks: 
+#T1 - Figure out how to break ties
+#T2 - Figure out how to deal with candidates not on the ballot
 
 def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
     
@@ -13,73 +19,100 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
 
     #Greatest θ-winning set variables
     max_coefficient = 0
-    greatest_theta_winning_sets = []
+    greatest_theta_winning_sets = ['No winning sets found']
 
-    #Number of voters (n) and candidates (m)
+    #Number of ballots (n) and candidates (m)
     n = len(ballots)
     m = len(candidates)
 
-    #A2: Initialize preference matrix 
-    preference_count = [[0] * m for _ in range(m)]
-
-    #A3: Populate the preference matrix
-    for ballot in ballots:
-
-        current = ballots.index(ballot) #currrent is our current ballot
-        ballot_length = len(ballot) #ballot_length = length of current ballot
-        listed_candidates = set(ballot)
-        unlisted_candidates = set(candidates) - listed_candidates
-        
-        #Increment counts for candidates listed on ballot
-        for i in range(ballot_length - 1):
-            for j in range(i + 1, ballot_length):
-                winner = ballot[i]
-                loser = ballot[j]
-                winner_idx = candidates.index(winner)
-                loser_idx = candidates.index(loser)
-                preference_count[winner_idx][loser_idx] += vote_counts[current]
-            
-            #Increment counts for candidates not listed on ballot
-            #Every candidate not listed on the ballot is considered to be ranked lower than every candidate listed on the ballot
-
-            for listed in listed_candidates:
-                listed_idx = candidates.index(listed)
-                for unlisted in unlisted_candidates:
-                    unlisted_idx = candidates.index(unlisted)
-                    preference_count[listed_idx][unlisted_idx] += 1
-
-            #print('WE LOOPED') #OOB error bugfixing
-
-    #A4: Calculate θ coefficient for each pair
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
     for i in range(m):
         for j in range(i + 1, m):
-            pair_coefficient = 0
             for k in range(m):
-                if candidates[k] != candidates[i] and candidates[k] != candidates[j]:
-                    counter = 0
-                    if preference_count[i][k] > preference_count[k][i] or preference_count[j][k] > preference_count[k][j]:
-                        counter += 1
-            pair_coefficient = counter / n
-            if pair_coefficient > max_coefficient:
-                max_coefficient = pair_coefficient
-                greatest_theta_winning_sets = [(candidates[i], candidates[j])]
-            elif pair_coefficient == max_coefficient:
+                counter = 0 #Initialize counter
+                for ballot, count in zip(ballots, vote_counts):
+                    if candidates[i] in ballot and candidates[j] in ballot: #If both candidates are in the ballot
+                        if ballot.index(candidates[i]) < ballot.index(candidates[k]) or ballot.index(candidates[j]) < ballot.index(candidates[k]) or candidates[k] not in ballot: #If any candidate in this pair beats k or k is not listed
+                            counter += count
+                    if candidates[i] in ballot and candidates[j] not in ballot: #If candidate i is in the ballot but j is not
+                        if ballot.index(candidates[i]) < ballot.index(candidates[k]) or candidates[k] not in ballot: #If i beats k or k is not listed        
+                            counter += count
+                    if candidates[j] in ballot and candidates[i] not in ballot: #If candidate j is in the ballot but i is not           
+                        if ballot.index(candidates[j]) < ballot.index(candidates[k]) or candidates[k] not in ballot: #If j beats k or k is not listed   
+                            counter += count  
+                #Normalize θ by the total number of votes to get the coefficient
+                pair_coefficient = counter / sum(vote_counts)
+                if pair_coefficient > max_coefficient:
+                    max_coefficient = pair_coefficient
+                    greatest_theta_winning_sets = [(candidates[i], candidates[j])]
+                elif pair_coefficient == max_coefficient and max_coefficient != 0:
                     greatest_theta_winning_sets.append((candidates[i], candidates[j]))
 
-    #A5: Return greatest θ-winning sets
+    #A3: Return greatest θ-winning sets
     return greatest_theta_winning_sets, max_coefficient
 
 def main():
-    #Example usage
+    import random
+    #Example with 100 ballots and varied combinations
+    candidates = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    vote_counts = []
+    
+    #Generate 100 ballots with varied combinations and lengths
+    ballots = []
+    for _ in range(100):
+        ballot = random.sample(candidates, len(candidates)) 
+        ballots.append(ballot)
+        vote_counts.append(1)
+
+    #print(ballots) #Print ballots for debugging
+
+    winners, coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+    print(f"Greatest {coefficient}-winning sets:", winners)
+
+    #Example  with 50 ballots that are hard-coded, there will be a 1-winning set here
     candidates = ['A', 'B', 'C', 'D']
-    vote_counts = [1, 1, 1, 1]
+    vote_counts = [20, 20, 5, 5]
     ballots = [
         ['A', 'B', 'C', 'D'],
         ['B', 'A', 'D', 'C'],
-        ['C', 'D', 'B', 'A']
+        ['B', 'D', 'C', 'A'],
+        ['D', 'C', 'B', 'A'],
     ]
 
     winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficent}-winning sets:", winners)
 
-#main()
+    #OUTDATED
+    #Example with 6 ballots that are hard-coded, there will be no winning sets found here
+    candidates = ['A', 'B', 'C']
+    vote_counts = [1,1,1,1,1,1]
+    ballots = [
+        ['A', 'B', 'C'],  
+        ['A', 'C', 'B'],  
+        ['B', 'A', 'C'], 
+        ['B', 'C', 'A'],
+        ['C', 'A', 'B'],
+        ['C', 'B', 'A']  
+    ]
+    winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+    print(f"Greatest {coefficent}-winning sets:", winners)
+
+    #OUTDATED
+    #Example with 6 ballots that are hard-coded, there will a 0.5-winning set here
+    #We have to account for incomplete ballots because those happen in the real world a lot
+    candidates = ['A', 'B', 'C', 'D']
+    vote_counts = [1, 1, 1, 1, 1, 1]
+    ballots = [
+        ['A', 'C', 'B', 'D'],
+        ['A', 'B', 'D', 'C'],
+        ['B', 'A', 'C', 'D'],
+        ['B', 'A', 'D', 'C'],
+        ['C', 'D', 'A', 'B'],
+        ['D', 'C', 'B', 'A']
+    ]
+    winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+    print(f"Greatest {coefficent}-winning sets:", winners)
+
+#Testing
+if __name__ == "__main__":
+    main()
