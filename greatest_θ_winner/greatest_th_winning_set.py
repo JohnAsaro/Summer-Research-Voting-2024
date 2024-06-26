@@ -29,9 +29,11 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
         for j in range(i + 1, m):
             counter = 0 #Initialize counter
             tiebreaker = 0 #Initialize tiebreaker
+            min_theta = 100000000 #Initialize min theta
             for k in range(m):
                 #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
                 if k != i != j: #If k is not i or j
+                    current_theta = 0 #Initialize min theta
                     for ballot, count in zip(ballots, vote_counts):
                         if candidates[k] not in ballot:
                             if candidates[j] or candidates[i] in ballot:
@@ -49,12 +51,16 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
                         elif candidates[j] in ballot and candidates[i] not in ballot: #If candidate j is in the ballot but i is not           
                             if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If j beats k 
                                 counter += count  
-            #Normalize θ by the total number of votes over all compared candidates to get the coefficient
-            pair_coefficient = counter / (sum(vote_counts) * m - 2)
-            if pair_coefficient > max_coefficient:
-                max_coefficient = pair_coefficient
+                    #Normalize θ by the total number of votes to get the coefficient
+                    current_theta = counter / sum(vote_counts) 
+                    if current_theta < min_theta:
+                        min_theta = current_theta
+            tiebreaker = 0
+            pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+            if pair_coefficent > max_coefficient:
+                max_coefficient = pair_coefficent
                 greatest_theta_winning_sets = [(candidates[i], candidates[j])]
-            elif pair_coefficient == max_coefficient and max_coefficient != 0:
+            elif pair_coefficent == max_coefficient and max_coefficient != 0:
                 #greatest_theta_winning_sets.append((candidates[i], candidates[j]))
                 if tiebreaker > current_champ_tiebreaker: #If the current pair has a higher tiebreaker than the current champion
                     greatest_theta_winning_sets = [(candidates[i], candidates[j])]
@@ -84,7 +90,7 @@ def main(): #Testing various inputs
     winners, coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficient}-winning sets:", winners)
 
-    #Example with 50 ballots that are hard-coded, there will be a 0.631-winning set here, shows how this algorithm
+    #Example with 50 ballots that are hard-coded, there will be a 0.6-winning set here, shows how this algorithm
     #can handle agregated data
     candidates = ['A', 'B', 'C', 'D']
     vote_counts = [20, 20, 5, 5]
@@ -98,7 +104,7 @@ def main(): #Testing various inputs
     winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficent}-winning sets:", winners)
 
-    #Example with 6 ballots that are hard-coded, there will be a 0.59 winning set found here, shows how this algorithm
+    #Example with 6 ballots that are hard-coded, there will be a 0.66 winning set found here, shows how this algorithm
     #can handle instances where not all candidates are ranked
     candidates = ['A', 'B', 'C', 'D']
     vote_counts = [1,1,1,1,1,1]
@@ -131,16 +137,16 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
         winners, coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
         if len(winners) > 1: 
             total_ties += 1
-        #if(i%1000 < 1):
-        #print(i) #Print for troubleshooting
+        if(i%5000 < 1):
+            print(f"{i/1000}% complete") #Print to track progress when doing 100,000 tests
         #print(ballot) #Print for troubleshooting
     print(total_ties) #How many ties was that?
     return(total_ties)
 
 #Testing
-#if __name__ == "__main__":
-#    main()
-#check_for_ties(100000, 10, 20)
+if __name__ == "__main__":
+    main()
+#check_for_ties(100000, 5, 3)
 #with open('output.txt', 'w') as file: #Store output in output.txt text file
 #    output = check_for_ties(100000, 10, 20) 
 #    file.write(f"For 20 candidates and 10 ballots tested 100,000 times, there were {output} ties\n")
