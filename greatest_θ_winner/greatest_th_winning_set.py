@@ -113,27 +113,34 @@ def main(): #Testing various inputs
     winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficent}-winning sets:", winners)
 
-def check_for_ties(): #This method is used to check for ties in the greatest θ-winning set, this tests how good the tiebreaking method is
+def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method is used to check for ties in the greatest θ-winning set, this tests how good the tiebreaking method is
     #Fiddle with the numbers to test different values of m and n
     import random
     winners = []
     ballots = []
     total_ties = 0
 
-    for i in range(100000):
-        candidates = [f'Candidate_{i}' for i in range(1, 4)] #Generate this many candidates (the second number - 1)
+    for i in range(tests): #Do this many tests
+        candidates = [f'Candidate_{i}' for i in range(1, number_of_candidates)] #Generate this many candidates (candidate_number - 1)
         vote_counts = []
         ballots = []
-        for j in range(1000):
+        for j in range(number_of_ballots):
             ballot = random.sample(candidates, len(candidates)) 
             ballots.append(ballot)
             vote_counts.append(1)
         winners, coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
         if len(winners) > 1: 
             total_ties += 1
+        #if(i%1000 < 1):
+        #print(i) #Print for troubleshooting
+        #print(ballot) #Print for troubleshooting
     print(total_ties) #How many ties was that?
+    return(total_ties)
 
 #Testing
 #if __name__ == "__main__":
 #    main()
-#check_for_ties()
+#check_for_ties(100000, 10, 20)
+#with open('output.txt', 'w') as file: #Store output in output.txt text file
+#    output = check_for_ties(100000, 10, 20) 
+#    file.write(f"For 20 candidates and 10 ballots tested 100,000 times, there were {output} ties\n")
