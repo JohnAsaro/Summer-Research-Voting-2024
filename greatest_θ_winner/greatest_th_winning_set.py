@@ -55,7 +55,7 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
                     current_theta = counter / sum(vote_counts) 
                     if current_theta < min_theta:
                         min_theta = current_theta
-            tiebreaker = 0
+            #tiebreaker = 0 #disable tiebreaker for testing
             pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
             if pair_coefficent > max_coefficient:
                 max_coefficient = pair_coefficent
@@ -144,8 +144,8 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
     return(total_ties)
 
 #Testing
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
 #check_for_ties(100000, 5, 3)
 #with open('output.txt', 'w') as file: #Store output in output.txt text file
 #    output = check_for_ties(100000, 10, 20) 

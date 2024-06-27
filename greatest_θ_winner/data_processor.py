@@ -118,3 +118,8 @@ def main():
 #file_path = csvfinder('aggregated_voting_NYCMayor.csv')
 #winners, coefficient = data_processor(file_path)
 #print(f"Greatest {coefficient}-winning sets:", winners)
+
+#Example usage for Test 8 (snack survey)
+file_path = csvfinder('Reformatted_Snack_Survey.csv')
+winners, coefficient = data_processor(file_path)
+print(f"Greatest {coefficient}-winning sets:", winners)
