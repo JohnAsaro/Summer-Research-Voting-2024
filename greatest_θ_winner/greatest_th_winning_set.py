@@ -3,7 +3,7 @@
 #T2 - Make a different function for when we consider unranked candidates and ranked candidates because the ladder is more efficent than the former
 #T3 - I can def make the code for A2 less horrible 
 
-def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
+def find_greatest_theta_winning_set(candidates, ballots, vote_counts): #Find greatest θ-winning set when k = 2
     
     #Input: 
     #candidates - an array of each candidate
@@ -68,6 +68,56 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts):
                 elif tiebreaker == current_champ_tiebreaker: #If the tiebreakers are equal, this should be rare
                     #print("Tie found")
                     greatest_theta_winning_sets.append((candidates[i], candidates[j]))
+
+    #A3: Return greatest θ-winning sets
+    return greatest_theta_winning_sets, max_coefficient
+
+def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #Find greatest θ-winning set when k is 1
+    
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+
+    #A1: Initialize variables
+
+    #Greatest θ-winning set variables
+    max_coefficient = 0
+    greatest_theta_winning_sets = ['No winning sets found']
+
+    #Number of ballots (n) and candidates (m)
+    n = len(ballots)
+    m = len(candidates)
+
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+    
+    current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
+    for j in range(m):
+        counter = 0 #Initialize counter
+        min_theta = 100000000 #Initialize min theta
+        for k in range(m):
+            #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
+            if k != j: #If k is not j
+                current_theta = 0 #Initialize min theta
+                for ballot, count in zip(ballots, vote_counts):
+                    if candidates[k] not in ballot:
+                        if candidates[j] in ballot:
+                            counter += count
+                    elif candidates[j] in ballot: #If candidate in the ballot
+                        if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate beats k
+                            counter += count
+                #Normalize θ by the total number of votes to get the coefficient
+                current_theta = counter / sum(vote_counts) 
+                if current_theta < min_theta:
+                    min_theta = current_theta
+        pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+        if pair_coefficent > max_coefficient:
+            max_coefficient = pair_coefficent
+            greatest_theta_winning_sets = [(candidates[j])]
+        elif pair_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
+            greatest_theta_winning_sets.append((candidates[j]))
 
     #A3: Return greatest θ-winning sets
     return greatest_theta_winning_sets, max_coefficient
@@ -144,8 +194,8 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
     return(total_ties)
 
 #Testing
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    main()
 #check_for_ties(100000, 5, 3)
 #with open('output.txt', 'w') as file: #Store output in output.txt text file
 #    output = check_for_ties(100000, 10, 20) 
