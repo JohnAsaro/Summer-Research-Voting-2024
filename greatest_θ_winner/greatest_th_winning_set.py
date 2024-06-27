@@ -194,8 +194,8 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
     return(total_ties)
 
 #Testing
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
 #check_for_ties(100000, 5, 3)
 #with open('output.txt', 'w') as file: #Store output in output.txt text file
 #    output = check_for_ties(100000, 10, 20) 

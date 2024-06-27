@@ -1,3 +1,7 @@
+#Tasks
+# T1 - Make it so that it ALWAYS finds the greatest theta winning set and you dont have to rerun it a bunch of times (I assume this is a problem with how incomplete ballots are processed)
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^ MASSIVE PROBLEM FIX ASAP -> this is defiently a problem with the data processor and NOT the greatest_th_winning_set code
+
 import csv
 from greatest_th_winning_set import find_greatest_theta_winning_set, find_greatest_theta_winning_set_k_is_1
 from pathfinder import csvfinder
@@ -36,7 +40,7 @@ def data_processor(file_path):
     candidates, ballots = format_data_for_theta(cleaned_data)
     
     try:
-        result = find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts)
+        winners, coefficent = find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts)
     except ValueError as e:
         print(f"Error: {e}")
         return False
@@ -45,7 +49,7 @@ def data_processor(file_path):
         return False
     
     try:
-        result2 = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+        winners2, coefficent2 = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     except ValueError as e:
         print(f"Error: {e}")
         return False
@@ -53,7 +57,7 @@ def data_processor(file_path):
         print(f"Index Error: {e}")
         return False
     
-    return result, result2
+    return winners, coefficent, winners2, coefficent2
 
 def print_debug(file_path):
     
@@ -89,10 +93,10 @@ def main():
 #Testing
 
 #Example usage for Test 1
-file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
-winners, coefficient, winners2, coefficent2 = data_processor(file_path)
-print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+#file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
+#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 2
 #file_path = csvfinder('Concycle-example.csv')
@@ -119,10 +123,10 @@ print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 6
-#file_path = csvfinder('test6.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
-#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+file_path = csvfinder('test6.csv')
+winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 7
 #file_path = csvfinder('test7.csv')
@@ -137,7 +141,7 @@ print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 8 (snack survey)
-#file_path = csvfinder('Reformatted_Snack_Survey.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
-#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+file_path = csvfinder('Reformatted_Snack_Survey.csv')
+winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
