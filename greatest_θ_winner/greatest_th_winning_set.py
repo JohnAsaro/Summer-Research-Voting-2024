@@ -27,12 +27,12 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts): #Find gre
     current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
     for i in range(m):
         for j in range(i + 1, m):
-            counter = 0 #Initialize counter
             tiebreaker = 0 #Initialize tiebreaker
             min_theta = 100000000 #Initialize min theta
+            counter = 0 #Initialize counter
             for k in range(m):
                 #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
-                if k != i != j: #If k is not i or j
+                if k != i and i != j and k != j: #If k is not i or j
                     current_theta = 0 #Initialize min theta
                     for ballot, count in zip(ballots, vote_counts):
                         if candidates[k] not in ballot:
@@ -55,11 +55,13 @@ def find_greatest_theta_winning_set(candidates, ballots, vote_counts): #Find gre
                     current_theta = counter / sum(vote_counts) 
                     if current_theta < min_theta:
                         min_theta = current_theta
+                    counter = 0 #Reset counter
             #tiebreaker = 0 #disable tiebreaker for testing
             pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
             if pair_coefficent > max_coefficient:
                 max_coefficient = pair_coefficent
                 greatest_theta_winning_sets = [(candidates[i], candidates[j])]
+                current_champ_tiebreaker = tiebreaker
             elif pair_coefficent == max_coefficient and max_coefficient != 0:
                 #greatest_theta_winning_sets.append((candidates[i], candidates[j]))
                 if tiebreaker > current_champ_tiebreaker: #If the current pair has a higher tiebreaker than the current champion
@@ -93,14 +95,13 @@ def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #F
 
     #A2: Directly compute θ coefficient for each pair by iterating through each ballot
     
-    current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
     for j in range(m):
         counter = 0 #Initialize counter
         min_theta = 100000000 #Initialize min theta
         for k in range(m):
             #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
             if k != j: #If k is not j
-                current_theta = 0 #Initialize min theta
+                current_theta = 0 #Initialize current theta
                 for ballot, count in zip(ballots, vote_counts):
                     if candidates[k] not in ballot:
                         if candidates[j] in ballot:
@@ -112,11 +113,12 @@ def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #F
                 current_theta = counter / sum(vote_counts) 
                 if current_theta < min_theta:
                     min_theta = current_theta
-        pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
-        if pair_coefficent > max_coefficient:
-            max_coefficient = pair_coefficent
+                counter = 0 #Reset counter
+        this_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+        if this_coefficent > max_coefficient:
+            max_coefficient = this_coefficent
             greatest_theta_winning_sets = [(candidates[j])]
-        elif pair_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
+        elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
             greatest_theta_winning_sets.append((candidates[j]))
 
     #A3: Return greatest θ-winning sets
@@ -154,7 +156,7 @@ def main(): #Testing various inputs
     winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficent}-winning sets:", winners)
 
-    #Example with 6 ballots that are hard-coded, there will be a 0.66 winning set found here, shows how this algorithm
+    #Example with 6 ballots that are hard-coded, there will be a 0.5 winning set found here, shows how this algorithm
     #can handle instances where not all candidates are ranked
     candidates = ['A', 'B', 'C', 'D']
     vote_counts = [1,1,1,1,1,1]
@@ -168,6 +170,17 @@ def main(): #Testing various inputs
     ]
     winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
     print(f"Greatest {coefficent}-winning sets:", winners)
+
+    #Example with fruit survey, shows order of the candidates doesnt matter and showcases k = 1
+    vote_counts = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ballots = [['Fruit', 'Chips', 'Muffins', 'Munchkins', 'Popcorn'], ['Fruit', 'Popcorn', 'Munchkins', 'Chips', 'Muffins'], ['Munchkins', 'Chips', 'Fruit', 'Muffins', 'Popcorn'], ['Fruit', 'Chips', 'Popcorn', 'Munchkins', 'Muffins'], ['Popcorn', 'Chips', 'Fruit', 'Munchkins', 'Muffins'], ['Fruit', 'Popcorn', 'Chips', 'Munchkins', 'Muffins'], ['Chips', 'Popcorn', 'Muffins', 'Munchkins', 'Fruit'], ['Munchkins', 'Muffins', 'Chips', 'Popcorn', 'Fruit'], ['Fruit', 'Munchkins', 'Popcorn', 'Muffins', 'Chips'], ['Fruit', 'Chips', 'Munchkins', 'Muffins', 'Popcorn'], ['Fruit', 'Muffins', 'Chips', 'Popcorn', 'Munchkins'], ['Chips', 'Munchkins', 'Fruit', 'Muffins', 'Popcorn'], ['Fruit', 'Popcorn', 'Chips', 'Muffins', 'Munchkins'], ['Fruit', 'Chips', 'Popcorn', 'Munchkins', 'Muffins'], ['Munchkins', 'Chips', 'Fruit', 'Muffins', 'Popcorn'], ['Fruit', 'Munchkins', 'Muffins', 'Chips', 'Popcorn'], ['Munchkins', 'Muffins', 'Fruit', 'Chips', 'Popcorn'], ['Fruit', 'Popcorn', 'Chips', 'Muffins', 'Munchkins'], ['Chips', 'Popcorn', 'Munchkins', 'Fruit', 'Muffins'], ['Fruit', 'Popcorn', 'Muffins', 'Munchkins', 'Chips'], ['Chips', 'Popcorn', 'Munchkins', 'Fruit', 'Muffins'], ['Popcorn', 'Fruit', 'Chips', 'Munchkins', 'Muffins'], ['Munchkins', 'Muffins', 'Fruit', 'Chips', 'Popcorn'], ['Fruit', 'Popcorn', 'Chips', 'Munchkins', 'Muffins'], ['Fruit', 'Muffins', 'Chips', 'Munchkins', 'Popcorn'], ['Chips', 'Fruit', 'Munchkins', 'Popcorn', 'Muffins'], ['Muffins', 'Fruit', 'Munchkins', 'Popcorn', 'Chips']]
+    candidates = ['Chips', 'Popcorn', 'Muffins', 'Munchkins', 'Fruit']
+    winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+    print(f"Greatest {coefficent}-winning sets:", winners)
+    candidates = ['Muffins', 'Fruit', 'Popcorn', 'Munchkins', 'Chips']
+    winners, coefficent = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+    print(f"Greatest {coefficent}-winning sets:", winners)
+
 
 def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method is used to check for ties in the greatest θ-winning set, this tests how good the tiebreaking method is
     #Fiddle with the numbers to test different values of m and n
@@ -194,8 +207,8 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
     return(total_ties)
 
 #Testing
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    main()
 #check_for_ties(100000, 5, 3)
 #with open('output.txt', 'w') as file: #Store output in output.txt text file
 #    output = check_for_ties(100000, 10, 20) 

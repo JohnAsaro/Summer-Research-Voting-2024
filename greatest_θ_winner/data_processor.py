@@ -1,7 +1,3 @@
-#Tasks
-# T1 - Make it so that it ALWAYS finds the greatest theta winning set and you dont have to rerun it a bunch of times (I assume this is a problem with how incomplete ballots are processed)
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^ MASSIVE PROBLEM FIX ASAP -> this is defiently a problem with the data processor and NOT the greatest_th_winning_set code
-
 import csv
 from greatest_th_winning_set import find_greatest_theta_winning_set, find_greatest_theta_winning_set_k_is_1
 from pathfinder import csvfinder
@@ -76,7 +72,7 @@ def print_debug(file_path):
     for ballot in ballots: #Print each ballot
         counter += 1            
         print(counter, ballot, "Length:", len(ballot))
-
+    
     print("Candidates:") #Print each candidate
     print(candidates)
 
@@ -97,6 +93,7 @@ def main():
 #winners, coefficient, winners2, coefficent2 = data_processor(file_path)
 #print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+#print_debug(file_path)
 
 #Example usage for Test 2
 #file_path = csvfinder('Concycle-example.csv')
@@ -123,10 +120,10 @@ def main():
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 6
-file_path = csvfinder('test6.csv')
-winners, coefficient, winners2, coefficent2 = data_processor(file_path)
-print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+#file_path = csvfinder('test6.csv')
+#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 7
 #file_path = csvfinder('test7.csv')
@@ -143,5 +140,6 @@ print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 #Example usage for Test 8 (snack survey)
 file_path = csvfinder('Reformatted_Snack_Survey.csv')
 winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print_debug(file_path)
 print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
 print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
