@@ -1,5 +1,5 @@
 import csv
-from greatest_th_winning_set import find_greatest_theta_winning_set, find_greatest_theta_winning_set_k_is_1
+from greatest_th_winning_set import find_greatest_theta_winning_set, find_greatest_theta_winning_set_k_is_1, find_candidate_pair_theta
 from pathfinder import csvfinder
 
 def read_csv(file_path):
@@ -53,7 +53,16 @@ def data_processor(file_path):
         print(f"Index Error: {e}")
         return False
     
-    return winners, coefficent, winners2, coefficent2
+    return winners, coefficent, winners2, coefficent2, candidates, ballots, vote_counts
+
+def get_candidates_ballots_and_vote_counts(file_path):
+    data = read_csv(file_path)
+    
+    cleaned_data, vote_counts = clean_data(data)
+    
+    candidates, ballots = format_data_for_theta(cleaned_data)
+
+    return candidates, ballots, vote_counts
 
 def print_debug(file_path):
     
@@ -89,10 +98,13 @@ def main():
 #Testing
 
 #Example usage for Test 1
-#file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
-#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
+winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
+test = find_candidate_pair_theta('Raymond Dehn', 'Jacob Frey', candidates, ballots, vote_counts)
+print(test)
 #print_debug(file_path)
 
 #Example usage for Test 2
@@ -103,7 +115,7 @@ def main():
 
 #Example usage for Test 3
 #file_path = csvfinder('2021-Mayor-Cast-Vote-Record.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+#winners, coefficient, winners2, coefficent2, candidates, ballots, vote_counts = data_processor(file_path)
 #print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
@@ -138,8 +150,8 @@ def main():
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Example usage for Test 8 (snack survey)
-file_path = csvfinder('Reformatted_Snack_Survey.csv')
-winners, coefficient, winners2, coefficent2 = data_processor(file_path)
-print_debug(file_path)
-print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+#file_path = csvfinder('Reformatted_Snack_Survey.csv')
+#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+#print_debug(file_path)
+#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
