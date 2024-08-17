@@ -1,0 +1,23 @@
+with tiebreaker:
+For 3 candidates and 3 ballots tested 100,000 times, there were 5654 ties
+For 3 candidates and 5 ballots tested 100,000 times, there were 4696 ties
+For 3 candidates and 10 ballots tested 100,000 times, there were 4488 ties
+For 3 candidates and 50 ballots tested 100,000 times, there were 701 ties
+For 3 candidates and 100 ballots tested 100,000 times, there were 461 ties
+For 3 candidates and 1000 ballots tested 100,000 times, there were 37 ties
+For 3 candidates and 10 ballots tested 100,000 times, there were 4474 ties
+For 5 candidates and 10 ballots tested 100,000 times, there were 5994 ties
+For 10 candidates and 10 ballots tested 100,000 times, there were 4680 ties
+For 20 candidates and 10 ballots tested 100,000 times, there were 2777 ties
+
+without tiebreaker:
+For 3 candidates and 3 ballots tested 100,000 times, there were 33217 ties
+For 3 candidates and 5 ballots tested 100,000 times, there were 25811 ties
+For 3 candidates and 10 ballots tested 100,000 times, there were 28069 ties
+For 3 candidates and 50 ballots tested 100,000 times, there were 9973 ties
+For 3 candidates and 100 ballots tested 100,000 times, there were 7810 ties
+For 3 candidates and 1000 ballots tested 100,000 times, there were 2350 ties
+For 3 candidates and 10 ballots tested 100,000 times, there were 28332 ties
+For 5 candidates and 10 ballots tested 100,000 times, there were 52314 ties
+For 10 candidates and 10 ballots tested 100,000 times, there were 70528 ties
+For 20 candidates and 10 ballots tested 100,000 times, there were 76805 ties

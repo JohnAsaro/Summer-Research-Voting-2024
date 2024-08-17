@@ -132,9 +132,9 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
     total_ties = 0
 
     for i in range(tests): #Do this many tests
-        candidates = [f'Candidate_{i}' for i in range(1, number_of_candidates)] #Generate this many candidates (candidate_number - 1)
+        candidates = [f'Candidate_{i}' for i in range(0, number_of_candidates)] #Generate number_of_candidates many candidates
         vote_counts = []
-        ballots = []
+        ballots = [] 
         for j in range(number_of_ballots):
             ballot = random.sample(candidates, len(candidates)) 
             ballots.append(ballot)
@@ -202,6 +202,50 @@ def find_candidate_pair_theta(candidate_c_i, candidate_c_j, candidates, ballots,
     #A3: Return theta coefficient
     return pair_coefficent
 
+def find_single_candidate_theta(candidate_c_i, candidates, ballots, vote_counts): #function to find the theta coefficent of a single candidate when k = 1
+        
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+    #candidate_c_i/candidate_c_j - the candidates whose theta coefficient we are trying to find
+
+    #A1: Initialize variables
+
+    #Remove c_i from the list of candidates
+
+    candidates = [s for s in candidates if s not in (candidate_c_i)]
+    
+    #Number of ballots (n) and candidates (m)
+    n = len(ballots)
+    m = len(candidates)
+
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+    
+    min_theta = 100000000 #Initialize min theta
+    counter = 0 #Initialize counter
+    for k in range(m):
+        #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
+        current_theta = 0 #Initialize current theta
+        for ballot, count in zip(ballots, vote_counts):
+            if candidates[k] not in ballot:
+                if candidate_c_i in ballot:
+                    counter += count
+            elif candidate_c_i in ballot: #If candidate i and k are in the ballot
+                if ballot.index(candidate_c_i) < ballot.index(candidates[k]): #If candidate i beats k
+                    counter += count
+            #Normalize θ by the total number of votes to get the coefficient
+            current_theta = counter / sum(vote_counts) 
+        if current_theta < min_theta:
+            min_theta = current_theta
+        counter = 0 #Reset counter
+    pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+    
+    #A3: Return theta coefficient
+    return pair_coefficent
+
 #Testing
 
 def main(): #Testing various inputs
@@ -262,15 +306,15 @@ def main(): #Testing various inputs
     print(f"Greatest {coefficent}-winning sets:", winners)
 
 def test_for_ties():
-    with open('output.txt', 'w') as file: #Store output in output.txt text file
+    with open('output.txt', 'a') as file: #Store output in output.txt text file
         number_of_ballots = [3, 5, 10, 50, 100, 1000]
         number_of_candidates = [3, 5, 10, 20]
         for n in number_of_ballots:
             output = check_for_ties(100000, n, 3) 
             file.write(f"For 3 candidates and {n} ballots tested 100,000 times, there were {output} ties\n")
-            #print(f'Done with {n} ballots and 3 candidates')
+            print(f'Done with {n} ballots and 3 candidates')
         for m in number_of_candidates:
             output = check_for_ties(100000, 10, m) 
             file.write(f"For {m} candidates and 10 ballots tested 100,000 times, there were {output} ties\n")
-            #print(f'Done with {m} candidates and 10 ballots')
+            print(f'Done with {m} candidates and 10 ballots')
 #test_for_ties()
