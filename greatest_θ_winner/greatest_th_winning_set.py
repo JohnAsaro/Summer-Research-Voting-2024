@@ -93,6 +93,8 @@ def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #F
     n = len(ballots)
     m = len(candidates)
 
+    #print(f'Initial ballots {ballots}') #Print for troubleshooting
+
     #A2: Directly compute θ coefficient for each pair by iterating through each ballot
     
     for j in range(m):

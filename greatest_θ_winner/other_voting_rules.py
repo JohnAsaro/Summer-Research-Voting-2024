@@ -35,7 +35,7 @@ def plurality_k_1(candidates, ballots, vote_counts):
     #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
     #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
     #that exact ballot appeared in the raw data
-
+    
     #A1: Initialize a dictionary to count votes for each candidate
     vote_tally = {candidate: 0 for candidate in candidates}
     
@@ -468,7 +468,7 @@ def find_single_candidate_theta(candidate_c_i, candidates, ballots, vote_counts)
     #Remove c_i from the list of candidates
 
     candidates = [s for s in candidates if s not in (candidate_c_i)]
-    
+
     #Number of ballots (n) and candidates (m)
     n = len(ballots)
     m = len(candidates)
