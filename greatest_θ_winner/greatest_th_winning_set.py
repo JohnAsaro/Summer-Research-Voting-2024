@@ -236,15 +236,15 @@ def find_single_candidate_theta(candidate_c_i, candidates, ballots, vote_counts)
             elif candidate_c_i in ballot: #If candidate i and k are in the ballot
                 if ballot.index(candidate_c_i) < ballot.index(candidates[k]): #If candidate i beats k
                     counter += count
-            #Normalize θ by the total number of votes to get the coefficient
-            current_theta = counter / sum(vote_counts) 
+        #Normalize θ by the total number of votes to get the coefficient
+        current_theta = counter / sum(vote_counts) 
         if current_theta < min_theta:
             min_theta = current_theta
         counter = 0 #Reset counter
-    pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+    this_coefficent = min_theta #Set the coefficient to the minimum theta found
     
     #A3: Return theta coefficient
-    return pair_coefficent
+    return this_coefficent
 
 #Testing
 

@@ -199,9 +199,11 @@ def copeland_k_2(candidates, ballots, vote_counts):
     #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
     #that exact ballot appeared in the raw data
 
-    #A1: Initialize a dictionary to store pairwise wins for each candidate
+    #A1: Initialize a dictionary to store pairwise wins for each candidate/initialize variables
     copeland_scores = {candidate: 0 for candidate in candidates}
     
+    condorcet_winner = None #Flag to store the Condorcet winner if found
+
     #A2: Compare every pair of candidates
     for i in range(len(candidates)):
         for j in range(i + 1, len(candidates)):
@@ -231,11 +233,22 @@ def copeland_k_2(candidates, ballots, vote_counts):
             else:
                 copeland_scores[cand1] += 0.5  #tie
                 copeland_scores[cand2] += 0.5  #tie
+    
+    #A3: Check each candidate for Condorcet criterion
+    for candidate, score in copeland_scores.items():
+        if score == len(candidates) - 1:
+            condorcet_winner = candidate
+            break
 
-    #A3: Sort candidates by Copeland scores in descending order
+    #A4: Sort candidates by Copeland scores in descending order
     sorted_candidates = sorted(copeland_scores.items(), key=lambda item: item[1], reverse=True)
     
-    #A4: Return the top 2 candidates
+    #A5: If a Condorcet winner is found, ensure they're at the top of the list
+    if condorcet_winner:
+        sorted_candidates = [(condorcet_winner, copeland_scores[condorcet_winner])] + \
+                            [item for item in sorted_candidates if item[0] != condorcet_winner]
+
+    #A6: Return the top 2 candidates
     top_2_candidates = [candidate[0] for candidate in sorted_candidates[:2]]
     
     return top_2_candidates
@@ -281,10 +294,201 @@ def copeland_k_1(candidates, ballots, vote_counts):
                 copeland_scores[cand1] += 0.5  #tie
                 copeland_scores[cand2] += 0.5  #tie
 
-    #A3: Sort candidates by Copeland scores in descending order
+    #A3: Check each candidate for Condorcet criterion 
+    for candidate, score in copeland_scores.items():
+        if score == len(candidates):
+            return [candidate] #This is the condorcet winner, return it
+
+    #A4: If no condorcet winner is found, sort candidates by Copeland scores in descending order
     sorted_candidates = sorted(copeland_scores.items(), key=lambda item: item[1], reverse=True)
     
-    #A4: Return the top 2 candidates
+    #A5: Return the top candidate
     top_candidate = [candidate[0] for candidate in sorted_candidates[:1]]
-    
+
     return top_candidate
+
+def greatest_theta_winning_set_k_2(candidates, ballots, vote_counts): #Find greatest θ-winning set when k = 2, copying this over because this should only be used with comparing_voting_rules.py, so I can afford to get rid of all the checks for incomplete ballots, thus making it more efficient
+    
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+
+    #A1: Initialize variables
+
+    #Greatest θ-winning set variables
+    max_coefficient = 0
+    greatest_theta_winning_sets = ['No winning sets found']
+
+    #Number of ballots (n) and candidates (m)
+    n = len(ballots)
+    m = len(candidates)
+
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+    
+    current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
+    for i in range(m):
+        for j in range(i + 1, m):
+            tiebreaker = 0 #Initialize tiebreaker
+            min_theta = 100000000 #Initialize min theta
+            counter = 0 #Initialize counter
+            for k in range(m):
+                if k != i and i != j and k != j: #If k is not i or j
+                    current_theta = 0 #Initialize current theta
+                    for ballot, count in zip(ballots, vote_counts):
+                        if ballot.index(candidates[i]) < ballot.index(candidates[k]) or ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate in this pair beats k
+                            counter += count
+                            if ballot.index(candidates[i]) < ballot.index(candidates[k]) and ballot.index(candidates[j]) < ballot.index(candidates[k]): #If both candidates in the pair beat k, for tiebreaking purposes
+                                tiebreaker += count
+                    #Normalize θ by the total number of votes to get the coefficient
+                    current_theta = counter / sum(vote_counts) 
+                    if current_theta < min_theta:
+                        min_theta = current_theta
+                    counter = 0 #Reset counter
+            tiebreaker = 0 
+            pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+            if pair_coefficent > max_coefficient:
+                max_coefficient = pair_coefficent
+                greatest_theta_winning_sets = [(candidates[i], candidates[j])]
+                current_champ_tiebreaker = tiebreaker
+            elif pair_coefficent == max_coefficient and max_coefficient != 0:
+                #greatest_theta_winning_sets.append((candidates[i], candidates[j]))
+                if tiebreaker > current_champ_tiebreaker: #If the current pair has a higher tiebreaker than the current champion
+                    greatest_theta_winning_sets = [(candidates[i], candidates[j])]
+                    current_champ_tiebreaker = tiebreaker
+                elif tiebreaker == current_champ_tiebreaker: #If the tiebreakers are equal, this should be rare
+                    #print("Tie found")
+                    greatest_theta_winning_sets.append((candidates[i], candidates[j]))
+
+    #A3: Return greatest θ-winning sets
+    return greatest_theta_winning_sets, max_coefficient
+
+def greatest_theta_winning_set_k_1(candidates, ballots, vote_counts): #Find greatest θ-winning set when k is 1, copying this over because this should only be used with comparing_voting_rules.py, so I can afford to get rid of all the checks for incomplete ballots, thus making it more efficient
+    
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+
+    #A1: Initialize variables
+
+    #Greatest θ-winning set variables
+    max_coefficient = 0
+    greatest_theta_winning_sets = ['No winning sets found']
+
+    #Number of ballots (n) and candidates (m)
+    n = len(ballots)
+    m = len(candidates)
+
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+    
+    for j in range(m):
+        counter = 0 #Initialize counter
+        min_theta = 100000000 #Initialize min theta
+        for k in range(m):
+            if k != j: #If k is not j
+                current_theta = 0 #Initialize current theta
+                for ballot, count in zip(ballots, vote_counts):
+                    if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate beats k
+                        counter += count
+                #Normalize θ by the total number of votes to get the coefficient
+                current_theta = counter / sum(vote_counts) 
+                if current_theta < min_theta:
+                    min_theta = current_theta
+                counter = 0 #Reset counter
+        this_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+        if this_coefficent > max_coefficient:
+            max_coefficient = this_coefficent
+            greatest_theta_winning_sets = [(candidates[j])]
+        elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
+            greatest_theta_winning_sets.append((candidates[j]))
+
+    #A3: Return greatest θ-winning sets
+    return greatest_theta_winning_sets, max_coefficient
+
+def find_candidate_pair_theta(candidate_c_i, candidate_c_j, candidates, ballots, vote_counts): #function to find the theta coefficent of a pair of candidates for the greatest theta winning set when k = 2, , copying this over because this should only be used with comparing_voting_rules.py, so I can afford to get rid of all the checks for incomplete ballots, thus making it more efficient
+        
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+    #candidate_c_i/candidate_c_j - the candidates whose theta coefficient we are trying to find
+
+    #A1: Initialize variables
+
+    #Remove c_i and c_j from the list of candidates
+
+    candidates = [s for s in candidates if s not in (candidate_c_i, candidate_c_j)]
+
+    #Number of ballots (n) and candidates (m)
+    n = len(ballots)
+    m = len(candidates)
+
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+    
+    min_theta = 100000000 #Initialize min theta
+    counter = 0 #Initialize counter
+    for k in range(m):
+        if candidate_c_i != candidate_c_j: #If c_i is not c_j
+            current_theta = 0 #Initialize current theta
+            for ballot, count in zip(ballots, vote_counts):
+                if ballot.index(candidate_c_i) < ballot.index(candidates[k]) or ballot.index(candidate_c_j) < ballot.index(candidates[k]): #If any candidate in this pair beats k
+                    counter += count
+            #Normalize θ by the total number of votes to get the coefficient
+            current_theta = counter / sum(vote_counts) 
+            if current_theta < min_theta:
+                min_theta = current_theta
+            counter = 0 #Reset counter
+    pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+    
+    if(min_theta == 100000000):
+        raise ValueError("Error: Both candidates in the pair are the same")
+    
+    #A3: Return theta coefficient
+    return pair_coefficent
+
+def find_single_candidate_theta(candidate_c_i, candidates, ballots, vote_counts): #function to find the theta coefficent of a single candidate when k = 1, , copying this over because this should only be used with comparing_voting_rules.py, so I can afford to get rid of all the checks for incomplete ballots, thus making it more efficient
+        
+    #Input: 
+    #candidates - an array of each candidate
+    #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"
+    #vote_counts - an array of the same length as "ballots", if each individual ballot is included in "ballots", each
+    #member of vote_counts should be 1, if the data is aggregated, then the count should be equal to the amount of times
+    #that exact ballot appeared in the raw data
+    #candidate_c_i/candidate_c_j - the candidates whose theta coefficient we are trying to find
+
+    #A1: Initialize variables
+
+    #Remove c_i from the list of candidates
+
+    candidates = [s for s in candidates if s not in (candidate_c_i)]
+    
+    #Number of ballots (n) and candidates (m)
+    n = len(ballots)
+    m = len(candidates)
+
+    #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+    
+    min_theta = 100000000 #Initialize min theta
+    counter = 0 #Initialize counter
+    for k in range(m):
+        #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
+        current_theta = 0 #Initialize current theta
+        for ballot, count in zip(ballots, vote_counts):
+            if ballot.index(candidate_c_i) < ballot.index(candidates[k]): #If candidate i beats k
+                counter += count
+        #Normalize θ by the total number of votes to get the coefficient
+        current_theta = counter / sum(vote_counts) 
+        if current_theta < min_theta:
+            min_theta = current_theta
+        counter = 0 #Reset counter
+    this_coefficent = min_theta #Set the coefficient to the minimum theta found
+    
+    #A3: Return theta coefficient
+    return this_coefficent

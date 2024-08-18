@@ -1,3 +1,4 @@
+index,n,m,Plurality,Plurality θ,Borda,Borda θ,Copeland,Copeland θ,STV,STV θ,Greatest θ-winning Set,Greatest θ Coefficient
 0,200,3,['Candidate_0'],0.825,['Candidate_0'],0.825,['Candidate_0'],0.825,['Candidate_0'],0.825,['Candidate_0'],0.825
 1,200,3,['Candidate_1'],0.825,['Candidate_1'],0.825,['Candidate_1'],0.825,['Candidate_1'],0.825,['Candidate_1'],0.825
 2,200,3,['Candidate_2'],0.805,['Candidate_1'],0.0,['Candidate_1'],0.0,['Candidate_2'],0.805,['Candidate_2'],0.805

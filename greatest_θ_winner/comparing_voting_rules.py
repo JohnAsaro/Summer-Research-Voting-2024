@@ -1,8 +1,7 @@
 #The purpose of this is to generate a bunch of random elections and compare the results of different voting rules
 
 import random
-from greatest_th_winning_set import find_greatest_theta_winning_set, find_candidate_pair_theta, find_greatest_theta_winning_set_k_is_1, find_single_candidate_theta
-from other_voting_rules import plurality_k_2, borda_k_2, stv_k_2, copeland_k_2, plurality_k_1, borda_k_1, stv_k_1, copeland_k_1
+from other_voting_rules import plurality_k_2, borda_k_2, stv_k_2, copeland_k_2, plurality_k_1, borda_k_1, stv_k_1, copeland_k_1, greatest_theta_winning_set_k_2, find_candidate_pair_theta, greatest_theta_winning_set_k_1, find_single_candidate_theta
 import csv
 import pandas as pd
 import numpy as np
@@ -27,7 +26,7 @@ def compare_voting_rules_k_2_random(num_tests, n, m, output_file='voting_results
         vote_counts = []
         ballots = []
         for j in range(n):
-            ballot = random.sample(candidates, len(candidates)) 
+            ballot = random.sample(candidates, m) 
             ballots.append(ballot)
             vote_counts.append(1)
 
@@ -35,7 +34,7 @@ def compare_voting_rules_k_2_random(num_tests, n, m, output_file='voting_results
         borda_result_k_2 = borda_k_2(candidates, ballots, vote_counts)
         copeland_result_k_2 = copeland_k_2(candidates, ballots, vote_counts)
         stv_result_k_2 = stv_k_2(candidates, ballots, vote_counts)
-        greatest_theta_result_k_2, greatest_theta_coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+        greatest_theta_result_k_2, greatest_theta_coefficient = greatest_theta_winning_set_k_2(candidates, ballots, vote_counts)
 
         #Add winners to the results dictionary
         results_dict["Plurality"].append(plurality_result_k_2)
@@ -78,7 +77,7 @@ def compare_voting_rules_k_1_random(num_tests, n, m, output_file='voting_results
         vote_counts = []
         ballots = []
         for j in range(n):
-            ballot = random.sample(candidates, len(candidates)) 
+            ballot = random.sample(candidates, m) 
             ballots.append(ballot)
             vote_counts.append(1)
 
@@ -86,7 +85,7 @@ def compare_voting_rules_k_1_random(num_tests, n, m, output_file='voting_results
         borda_result_k_1 = borda_k_1(candidates, ballots, vote_counts)
         copeland_result_k_1 = copeland_k_1(candidates, ballots, vote_counts)
         stv_result_k_1 = stv_k_1(candidates, ballots, vote_counts)
-        greatest_theta_result_k_1, greatest_theta_coefficient = find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts)
+        greatest_theta_result_k_1, greatest_theta_coefficient = greatest_theta_winning_set_k_1(candidates, ballots, vote_counts)
 
         #Add winners to the results dictionary
         results_dict["Plurality"].append(plurality_result_k_1)
@@ -123,7 +122,7 @@ def compare_voting_rules_k_2_normal(num_tests, n, m, output_file='voting_results
         results_dict["m"].append(m)
         
         #Generate ballots and vote counts
-        candidates = [f'Candidate_{i}' for i in range(0, m)] #Generate m candidates
+        candidates = [f'Candidate_{i}' for i in range(m)] #Generate m candidates
         vote_counts = []
         ballots = []
         for j in range(n):
@@ -140,7 +139,7 @@ def compare_voting_rules_k_2_normal(num_tests, n, m, output_file='voting_results
         borda_result_k_2 = borda_k_2(candidates, ballots, vote_counts)
         copeland_result_k_2 = copeland_k_2(candidates, ballots, vote_counts)
         stv_result_k_2 = stv_k_2(candidates, ballots, vote_counts)
-        greatest_theta_result_k_2, greatest_theta_coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+        greatest_theta_result_k_2, greatest_theta_coefficient = greatest_theta_winning_set_k_2(candidates, ballots, vote_counts)
 
         #Add winners to the results dictionary
         results_dict["Plurality"].append(plurality_result_k_2)
@@ -179,7 +178,7 @@ def compare_voting_rules_k_1_normal(num_tests, n, m, output_file='voting_results
         results_dict["m"].append(m)
         
         # Generate candidates
-        candidates = [f'Candidate_{i}' for i in range(0, m)] #Generate m candidates
+        candidates = [f'Candidate_{i}' for i in range(m)] #Generate m candidates
         vote_counts = []
         ballots = []
         
@@ -189,7 +188,6 @@ def compare_voting_rules_k_1_normal(num_tests, n, m, output_file='voting_results
             
             #Create a ballot by sorting candidates based on the random scores
             ballot = [x for _, x in sorted(zip(random_scores, candidates), reverse=True)]
-            
             ballots.append(ballot)
             vote_counts.append(1)
 
@@ -198,7 +196,7 @@ def compare_voting_rules_k_1_normal(num_tests, n, m, output_file='voting_results
         borda_result_k_1 = borda_k_1(candidates, ballots, vote_counts)
         copeland_result_k_1 = copeland_k_1(candidates, ballots, vote_counts)
         stv_result_k_1 = stv_k_1(candidates, ballots, vote_counts)
-        greatest_theta_result_k_1, greatest_theta_coefficient = find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts)
+        greatest_theta_result_k_1, greatest_theta_coefficient = greatest_theta_winning_set_k_1(candidates, ballots, vote_counts)
 
         #Add winners to the results dictionary
         results_dict["Plurality"].append(plurality_result_k_1)
@@ -221,17 +219,22 @@ def compare_voting_rules_k_1_normal(num_tests, n, m, output_file='voting_results
 
 
 def main():
-    #marray = [3, 5, 10, 30, 50]
-#    narray = [5, 25, 50, 75, 100]
+    #marray = [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    #narray = [5, 25, 50, 75, 100]
     n = 200 
-    m = 50
-    num_tests = 500
+    m = 5
+    num_tests = 5
     #for m in marray:
     #compare_voting_rules_k_1_random(num_tests, n, m)
     #compare_voting_rules_k_2_random(num_tests, n, m)
-    #compare_voting_rules_k_1_normal(num_tests, n, m)
-    compare_voting_rules_k_2_normal(num_tests, n, m)
-    compare_voting_rules_k_1_normal(num_tests, n, 100) 
+    compare_voting_rules_k_1_normal(num_tests, n, m) 
+    #compare_voting_rules_k_2_normal(num_tests, n, m)
+
+def main2():
+    m = 3
+    n = 20
+    num_tests = 1
+    compare_voting_rules_k_1_normal(num_tests, n, m)
 
 if __name__ == '__main__':
     main()
