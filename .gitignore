@@ -1,3 +1,8 @@
 .env
 .venv
 backup.py
+temp.py
+old_greatest_th_winning_set.py
+output.txt
+__pycache__/
+test.py

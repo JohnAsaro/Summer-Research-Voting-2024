@@ -1,5 +1,3 @@
-#Tasks:
-#1: A2 can be changed so that the amount of votes added to each prefrence matrix are pulled from the "count" column and not just assumed to be 1
 from collections import defaultdict
 
 def condorcet_cycle(candidates, ballots, vote_counts): #Takes candidates/ballots/vote counts and detects if there is a condorcet cycle
@@ -42,7 +40,8 @@ def condorcet_cycle(candidates, ballots, vote_counts): #Takes candidates/ballots
                 listed_idx = candidates.index(listed)
                 for unlisted in unlisted_candidates:
                     unlisted_idx = candidates.index(unlisted)
-                    preference_count[listed_idx][unlisted_idx] += 1
+                    #print(unlisted) #Testing
+                    preference_count[listed_idx][unlisted_idx] += vote_counts[current]
 
             #print('WE LOOPED') #OOB error bugfixing
 
@@ -112,6 +111,5 @@ def main(): #For manually testing inputs
             ["C", "B", "A"],  #Voter 3 prefers C > B > A
         ]
         print(f"In this case there is no condorcet cycle and {condorcet_cycle(example_candidates, ballots_no_cycle, example_vote_counts)} will be returned.") 
-
 #Testing
 #main()
