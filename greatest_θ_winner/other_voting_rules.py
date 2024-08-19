@@ -347,7 +347,6 @@ def greatest_theta_winning_set_k_2(candidates, ballots, vote_counts): #Find grea
                     if current_theta < min_theta:
                         min_theta = current_theta
                     counter = 0 #Reset counter
-            tiebreaker = 0 
             pair_coefficent = min_theta #Set the pair coefficient to the minimum theta found
             if pair_coefficent > max_coefficient:
                 max_coefficient = pair_coefficent
@@ -358,9 +357,6 @@ def greatest_theta_winning_set_k_2(candidates, ballots, vote_counts): #Find grea
                 if tiebreaker > current_champ_tiebreaker: #If the current pair has a higher tiebreaker than the current champion
                     greatest_theta_winning_sets = [(candidates[i], candidates[j])]
                     current_champ_tiebreaker = tiebreaker
-                elif tiebreaker == current_champ_tiebreaker: #If the tiebreakers are equal, this should be rare
-                    #print("Tie found")
-                    greatest_theta_winning_sets.append((candidates[i], candidates[j]))
 
     #A3: Return greatest θ-winning sets
     return greatest_theta_winning_sets, max_coefficient
@@ -379,6 +375,7 @@ def greatest_theta_winning_set_k_1(candidates, ballots, vote_counts): #Find grea
     #Greatest θ-winning set variables
     max_coefficient = 0
     greatest_theta_winning_sets = ['No winning sets found']
+    current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
 
     #Number of ballots (n) and candidates (m)
     n = len(ballots)
@@ -388,6 +385,7 @@ def greatest_theta_winning_set_k_1(candidates, ballots, vote_counts): #Find grea
     
     for j in range(m):
         counter = 0 #Initialize counter
+        tiebreaker = 0 #Initialize tiebreaker
         min_theta = 100000000 #Initialize min theta
         for k in range(m):
             if k != j: #If k is not j
@@ -395,17 +393,22 @@ def greatest_theta_winning_set_k_1(candidates, ballots, vote_counts): #Find grea
                 for ballot, count in zip(ballots, vote_counts):
                     if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate beats k
                         counter += count
+                        tiebreaker += count
                 #Normalize θ by the total number of votes to get the coefficient
                 current_theta = counter / sum(vote_counts) 
                 if current_theta < min_theta:
                     min_theta = current_theta
                 counter = 0 #Reset counter
-        this_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+        this_coefficent = min_theta #Set the coefficient to the minimum theta found
         if this_coefficent > max_coefficient:
             max_coefficient = this_coefficent
             greatest_theta_winning_sets = [(candidates[j])]
-        elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
-            greatest_theta_winning_sets.append((candidates[j]))
+            current_champ_tiebreaker = tiebreaker
+        elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie
+            if tiebreaker > current_champ_tiebreaker: #If the current coefficent has a higher tiebreaker than the current champion
+                greatest_theta_winning_sets = [(candidates[j])]
+                current_champ_tiebreaker = tiebreaker
+        tiebreaker = 0 #Reset tiebreaker for next candidate
 
     #A3: Return greatest θ-winning sets
     return greatest_theta_winning_sets, max_coefficient

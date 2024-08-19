@@ -231,16 +231,19 @@ def compare_voting_rules_k_1_normal(num_tests, n, m, output_file='voting_results
 
 
 def main():
-    marray = [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    marray = [3, 5, 10, 30, 50]
+    #marray2 = [60, 70, 80, 90, 100]
     #narray = [5, 25, 50, 75, 100]
-    n = 200 
-    m = 10
+    n = 500 
+    #m = 10
     num_tests = 500
     for m in marray:
     #compare_voting_rules_k_1_random(num_tests, n, m)
     #compare_voting_rules_k_2_random(num_tests, n, m)
         compare_voting_rules_k_1_normal(num_tests, n, m) 
+    for m in marray:
         compare_voting_rules_k_2_normal(num_tests, n, m)
+    compare_voting_rules_k_1_normal(num_tests, n, 100)
 
 if __name__ == '__main__':
     main()
