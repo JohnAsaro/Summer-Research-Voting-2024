@@ -161,26 +161,26 @@ def main():
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Test 3
-#print("---------------------------------------------------------------------------------------------------")
-#print("Minneapolis 2021 data")
-#file_path = csvfinder('2021-Mayor-Cast-Vote-Record.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print("---------------------------------------------------------------------------------------------------")
+print("Minneapolis 2021 data")
+file_path = csvfinder('2021-Mayor-Cast-Vote-Record.csv')
+winners, coefficient, winners2, coefficent2 = data_processor(file_path)
 #print_debug(file_path)
-#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
-#plurality_winner_k_2 = data_processor_plurality(file_path) 
-#borda_winner_k_2 = data_processor_borda(file_path)
-#stv_winner_k_2 = data_processor_stv(file_path)
-#copeland_winner_k_2 = data_processor_copeland(file_path)
-#candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
-#plurality_theta_k_2 = find_candidate_pair_theta(plurality_winner_k_2[0], plurality_winner_k_2[1], candidates, ballots, vote_counts) #Pluarilty winners when k = 2 theta coefficent
-#borda_theta_k_2 = find_candidate_pair_theta(borda_winner_k_2[0], borda_winner_k_2[1], candidates, ballots, vote_counts) #Borda winners when k = 2 theta coefficent
-#stv_theta_k_2 = find_candidate_pair_theta(stv_winner_k_2[0], stv_winner_k_2[1], candidates, ballots, vote_counts) #STV winners when k = 2 theta coefficent
-#copeland_theta_k_2 = find_candidate_pair_theta(copeland_winner_k_2[0], copeland_winner_k_2[1], candidates, ballots, vote_counts) #Copeland winners when k = 2 theta coefficent
-#print(f"Plurality winners when k = 2: {plurality_winner_k_2}, this is a {plurality_theta_k_2}-winning set")
-#print(f"Borda winners when k = 2: {borda_winner_k_2}, this is a {borda_theta_k_2}-winning set")
-#print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winning set")
-#print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")
+print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+plurality_winner_k_2 = data_processor_plurality(file_path) 
+borda_winner_k_2 = data_processor_borda(file_path)
+stv_winner_k_2 = data_processor_stv(file_path)
+copeland_winner_k_2 = data_processor_copeland(file_path)
+candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
+plurality_theta_k_2 = find_candidate_pair_theta(plurality_winner_k_2[0], plurality_winner_k_2[1], candidates, ballots, vote_counts) #Pluarilty winners when k = 2 theta coefficent
+borda_theta_k_2 = find_candidate_pair_theta(borda_winner_k_2[0], borda_winner_k_2[1], candidates, ballots, vote_counts) #Borda winners when k = 2 theta coefficent
+stv_theta_k_2 = find_candidate_pair_theta(stv_winner_k_2[0], stv_winner_k_2[1], candidates, ballots, vote_counts) #STV winners when k = 2 theta coefficent
+copeland_theta_k_2 = find_candidate_pair_theta(copeland_winner_k_2[0], copeland_winner_k_2[1], candidates, ballots, vote_counts) #Copeland winners when k = 2 theta coefficent
+print(f"Plurality winners when k = 2: {plurality_winner_k_2}, this is a {plurality_theta_k_2}-winning set")
+print(f"Borda winners when k = 2: {borda_winner_k_2}, this is a {borda_theta_k_2}-winning set")
+print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winning set")
+print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")
 
 #Test 4
 #file_path = csvfinder('Concycle-test.csv')
@@ -207,26 +207,26 @@ def main():
 #print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
 
 #Test 8 (ny data)
-#print("---------------------------------------------------------------------------------------------------")
-#print("Ny data")
-#file_path = csvfinder('aggregated_voting_NYCMayor.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print("---------------------------------------------------------------------------------------------------")
+print("Ny data")
+file_path = csvfinder('aggregated_voting_NYCMayor.csv')
+winners, coefficient, winners2, coefficent2 = data_processor(file_path)
 #print_debug(file_path)
-#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
-#plurality_winner_k_2 = data_processor_plurality(file_path) 
-#borda_winner_k_2 = data_processor_borda(file_path)
-#stv_winner_k_2 = data_processor_stv(file_path)
-#copeland_winner_k_2 = data_processor_copeland(file_path)
-#candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
-#plurality_theta_k_2 = find_candidate_pair_theta(plurality_winner_k_2[0], plurality_winner_k_2[1], candidates, ballots, vote_counts) #Pluarilty winners when k = 2 theta coefficent
-#borda_theta_k_2 = find_candidate_pair_theta(borda_winner_k_2[0], borda_winner_k_2[1], candidates, ballots, vote_counts) #Borda winners when k = 2 theta coefficent
-#stv_theta_k_2 = find_candidate_pair_theta(stv_winner_k_2[0], stv_winner_k_2[1], candidates, ballots, vote_counts) #STV winners when k = 2 theta coefficent
-#copeland_theta_k_2 = find_candidate_pair_theta(copeland_winner_k_2[0], copeland_winner_k_2[1], candidates, ballots, vote_counts) #Copeland winners when k = 2 theta coefficent
-#print(f"Plurality winners when k = 2: {plurality_winner_k_2}, this is a {plurality_theta_k_2}-winning set")
-#print(f"Borda winners when k = 2: {borda_winner_k_2}, this is a {borda_theta_k_2}-winning set")
-#print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winning set")
-#print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")
+print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+plurality_winner_k_2 = data_processor_plurality(file_path) 
+borda_winner_k_2 = data_processor_borda(file_path)
+stv_winner_k_2 = data_processor_stv(file_path)
+copeland_winner_k_2 = data_processor_copeland(file_path)
+candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
+plurality_theta_k_2 = find_candidate_pair_theta(plurality_winner_k_2[0], plurality_winner_k_2[1], candidates, ballots, vote_counts) #Pluarilty winners when k = 2 theta coefficent
+borda_theta_k_2 = find_candidate_pair_theta(borda_winner_k_2[0], borda_winner_k_2[1], candidates, ballots, vote_counts) #Borda winners when k = 2 theta coefficent
+stv_theta_k_2 = find_candidate_pair_theta(stv_winner_k_2[0], stv_winner_k_2[1], candidates, ballots, vote_counts) #STV winners when k = 2 theta coefficent
+copeland_theta_k_2 = find_candidate_pair_theta(copeland_winner_k_2[0], copeland_winner_k_2[1], candidates, ballots, vote_counts) #Copeland winners when k = 2 theta coefficent
+print(f"Plurality winners when k = 2: {plurality_winner_k_2}, this is a {plurality_theta_k_2}-winning set")
+print(f"Borda winners when k = 2: {borda_winner_k_2}, this is a {borda_theta_k_2}-winning set")
+print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winning set")
+print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")
 
 #Test 9 (snack survey)
 print("---------------------------------------------------------------------------------------------------")
@@ -251,23 +251,23 @@ print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winn
 print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")
 
 #Test 10 (minneapolis data 2017)
-#print("---------------------------------------------------------------------------------------------------")
-#print("Minneapolis 2017 data")
-#file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
-#winners, coefficient, winners2, coefficent2 = data_processor(file_path)
+print("---------------------------------------------------------------------------------------------------")
+print("Minneapolis 2017 data")
+file_path = csvfinder('2017-Mayor-Ballot-Records.csv')
+winners, coefficient, winners2, coefficent2 = data_processor(file_path)
 #print_debug(file_path)
-#print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
-#print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
-#plurality_winner_k_2 = data_processor_plurality(file_path) 
-#borda_winner_k_2 = data_processor_borda(file_path)
-#stv_winner_k_2 = data_processor_stv(file_path)
-#copeland_winner_k_2 = data_processor_copeland(file_path)
-#candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
-#plurality_theta_k_2 = find_candidate_pair_theta(plurality_winner_k_2[0], plurality_winner_k_2[1], candidates, ballots, vote_counts) #Pluarilty winners when k = 2 theta coefficent
-#borda_theta_k_2 = find_candidate_pair_theta(borda_winner_k_2[0], borda_winner_k_2[1], candidates, ballots, vote_counts) #Borda winners when k = 2 theta coefficent
-#stv_theta_k_2 = find_candidate_pair_theta(stv_winner_k_2[0], stv_winner_k_2[1], candidates, ballots, vote_counts) #STV winners when k = 2 theta coefficent
-#copeland_theta_k_2 = find_candidate_pair_theta(copeland_winner_k_2[0], copeland_winner_k_2[1], candidates, ballots, vote_counts) #Copeland winners when k = 2 theta coefficent
-#print(f"Plurality winners when k = 2: {plurality_winner_k_2}, this is a {plurality_theta_k_2}-winning set")
-#print(f"Borda winners when k = 2: {borda_winner_k_2}, this is a {borda_theta_k_2}-winning set")
-#print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winning set")
-#print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")
+print(f"Greatest {coefficient}-winning sets when k = 1:", winners)
+print(f"Greatest {coefficent2}-winning sets when k = 2:", winners2)
+plurality_winner_k_2 = data_processor_plurality(file_path) 
+borda_winner_k_2 = data_processor_borda(file_path)
+stv_winner_k_2 = data_processor_stv(file_path)
+copeland_winner_k_2 = data_processor_copeland(file_path)
+candidates, ballots, vote_counts = get_candidates_ballots_and_vote_counts(file_path)
+plurality_theta_k_2 = find_candidate_pair_theta(plurality_winner_k_2[0], plurality_winner_k_2[1], candidates, ballots, vote_counts) #Pluarilty winners when k = 2 theta coefficent
+borda_theta_k_2 = find_candidate_pair_theta(borda_winner_k_2[0], borda_winner_k_2[1], candidates, ballots, vote_counts) #Borda winners when k = 2 theta coefficent
+stv_theta_k_2 = find_candidate_pair_theta(stv_winner_k_2[0], stv_winner_k_2[1], candidates, ballots, vote_counts) #STV winners when k = 2 theta coefficent
+copeland_theta_k_2 = find_candidate_pair_theta(copeland_winner_k_2[0], copeland_winner_k_2[1], candidates, ballots, vote_counts) #Copeland winners when k = 2 theta coefficent
+print(f"Plurality winners when k = 2: {plurality_winner_k_2}, this is a {plurality_theta_k_2}-winning set")
+print(f"Borda winners when k = 2: {borda_winner_k_2}, this is a {borda_theta_k_2}-winning set")
+print(f"STV winners when k = 2: {stv_winner_k_2}, this is a {stv_theta_k_2}-winning set")
+print(f"Copeland winners when k = 2: {copeland_winner_k_2}, this is a {copeland_theta_k_2}-winning set")

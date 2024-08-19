@@ -88,6 +88,7 @@ def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #F
     #Greatest θ-winning set variables
     max_coefficient = 0
     greatest_theta_winning_sets = ['No winning sets found']
+    current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
 
     #Number of ballots (n) and candidates (m)
     n = len(ballots)
@@ -99,6 +100,7 @@ def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #F
     
     for j in range(m):
         counter = 0 #Initialize counter
+        tiebreaker = 0 #Initialize tiebreaker
         min_theta = 100000000 #Initialize min theta
         for k in range(m):
             #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
@@ -108,21 +110,30 @@ def find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts): #F
                     if candidates[k] not in ballot:
                         if candidates[j] in ballot:
                             counter += count
+                            tiebreaker += count
                     elif candidates[j] in ballot: #If candidate in the ballot
                         if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate beats k
                             counter += count
+                            tiebreaker += count
                 #Normalize θ by the total number of votes to get the coefficient
                 current_theta = counter / sum(vote_counts) 
                 if current_theta < min_theta:
                     min_theta = current_theta
                 counter = 0 #Reset counter
-        this_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+        #tiebreaker = 0 #Disable tiebreaker for testing
+        this_coefficent = min_theta #Set the coefficient to the minimum theta found
         if this_coefficent > max_coefficient:
             max_coefficient = this_coefficent
             greatest_theta_winning_sets = [(candidates[j])]
-        elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
-            greatest_theta_winning_sets.append((candidates[j]))
-
+            current_champ_tiebreaker = tiebreaker
+        elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie
+            if current_champ_tiebreaker < tiebreaker: #If the current candidate has a higher tiebreaker than the current champion
+                greatest_theta_winning_sets = [(candidates[j])]
+                current_champ_tiebreaker = tiebreaker
+            else: #If there is an unbreakable tie, this should be rare
+                greatest_theta_winning_sets.append((candidates[j]))
+        tiebreaker = 0 #Reset tiebreaker for next candidate
+        
     #A3: Return greatest θ-winning sets
     return greatest_theta_winning_sets, max_coefficient
 
@@ -142,6 +153,31 @@ def check_for_ties(tests, number_of_ballots, number_of_candidates): #This method
             ballots.append(ballot)
             vote_counts.append(1)
         winners, coefficient = find_greatest_theta_winning_set(candidates, ballots, vote_counts)
+        if len(winners) > 1: 
+            total_ties += 1
+        if(i%5000 < 1):
+            print(f"{i/1000}% complete") #Print to track progress when doing 100,000 tests
+        #print(ballot) #Print for troubleshooting
+    #print(f'There was {total_ties} total ties.') #How many ties was that?
+    return(total_ties)
+
+
+def check_for_ties_k_1(tests, number_of_ballots, number_of_candidates): #This method is used to check for ties in the greatest θ-winning set (when k = 1), this tests how good the tiebreaking method is
+    #Fiddle with the numbers to test different values of m and n
+    import random
+    winners = []
+    ballots = []
+    total_ties = 0
+
+    for i in range(tests): #Do this many tests
+        candidates = [f'Candidate_{i}' for i in range(0, number_of_candidates)] #Generate number_of_candidates many candidates
+        vote_counts = []
+        ballots = [] 
+        for j in range(number_of_ballots):
+            ballot = random.sample(candidates, len(candidates)) 
+            ballots.append(ballot)
+            vote_counts.append(1)
+        winners, coefficient = find_greatest_theta_winning_set_k_is_1(candidates, ballots, vote_counts)
         if len(winners) > 1: 
             total_ties += 1
         if(i%5000 < 1):
@@ -308,7 +344,7 @@ def main(): #Testing various inputs
     print(f"Greatest {coefficent}-winning sets:", winners)
 
 def test_for_ties():
-    with open('output.txt', 'a') as file: #Store output in output.txt text file
+    with open('ties_k_is_2.txt', 'a') as file: #Store output in output.txt text file
         number_of_ballots = [3, 5, 10, 50, 100, 1000]
         number_of_candidates = [3, 5, 10, 20]
         for n in number_of_ballots:
@@ -319,4 +355,19 @@ def test_for_ties():
             output = check_for_ties(100000, 10, m) 
             file.write(f"For {m} candidates and 10 ballots tested 100,000 times, there were {output} ties\n")
             print(f'Done with {m} candidates and 10 ballots')
+
+def test_for_ties_k_is_1():
+    with open('ties_k_is_1.txt', 'a') as file: #Store output in output.txt text file
+        number_of_ballots = [3, 5, 10, 50, 100, 1000]
+        number_of_candidates = [3, 5, 10, 20]
+        #for n in number_of_ballots:
+        #    output = check_for_ties_k_1(100000, n, 3) 
+        #    file.write(f"For 3 candidates and {n} ballots tested 100,000 times, there were {output} ties\n")
+        #    print(f'Done with {n} ballots and 3 candidates')
+        for m in number_of_candidates:
+            output = check_for_ties_k_1(1000, 200, m) 
+            file.write(f"For {m} candidates and 200 ballots tested 1000 times, there were {output} ties\n")
+            print(f'Done with {m} candidates and 200 ballots')
+
 #test_for_ties()
+#test_for_ties_k_is_1()
